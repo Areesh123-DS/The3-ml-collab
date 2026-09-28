@@ -58,6 +58,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <s
 
 ```bash
 uv sync
+uv run pre-commit install
 uv run python -m src.dataset
 uv run python -m src.modeling.train
 uv run pytest
