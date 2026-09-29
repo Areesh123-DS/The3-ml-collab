@@ -1,12 +1,19 @@
 from pathlib import Path
 
 from loguru import logger
+import pandas as pd
 from tqdm import tqdm
 import typer
 
 from src.config import PROCESSED_DATA_DIR
 
 app = typer.Typer()
+
+
+def add_bedroom_ratio(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    out["BedroomRatio"] = out["AveBedrms"] / out["AveRooms"]
+    return out
 
 
 @app.command()
