@@ -26,4 +26,5 @@ repos:
     hooks:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
-        exclude: ^uv\.lock$|\.dvc$|^dvc\.lock$
+        # Hash-only files: lock hashes, DVC md5s and the git_sha in metrics.json
+        exclude: ^uv\.lock$|\.dvc$|^dvc\.lock$|^metrics\.json$
