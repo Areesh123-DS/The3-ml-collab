@@ -1,0 +1,43 @@
+stages:
+  prepare:
+    cmd: python -m src.prepare
+    deps:
+      - data/raw/california_housing.csv
+      - src/prepare.py
+      - src/config.py
+    params:
+      - configs/params.yaml:
+          - seed
+          - data.raw_path
+          - split.test_size
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+
+  train:
+    cmd: python -m src.modeling.train
+    deps:
+      - data/processed/train.csv
+      - src/modeling/train.py
+      - src/config.py
+    params:
+      - configs/params.yaml:
+          - seed
+          - data.target
+          - train
+    outs:
+      - models/model.joblib
+
+  evaluate:
+    cmd: python -m src.modeling.evaluate
+    deps:
+      - models/model.joblib
+      - data/processed/test.csv
+      - src/modeling/evaluate.py
+      - src/config.py
+    params:
+      - configs/params.yaml:
+          - data.target
+    metrics:
+      - metrics.json:
+          cache: false
