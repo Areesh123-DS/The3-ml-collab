@@ -34,9 +34,10 @@ def main(
     df = pd.read_csv(input_path)
     train_df, test_df = split_data(df, params)
 
+    # Fixed "\n" so the outputs (and their DVC hashes) are identical on Windows and Linux
     train_path.parent.mkdir(parents=True, exist_ok=True)
-    train_df.to_csv(train_path, index=False)
-    test_df.to_csv(test_path, index=False)
+    train_df.to_csv(train_path, index=False, lineterminator="\n")
+    test_df.to_csv(test_path, index=False, lineterminator="\n")
     logger.success(f"Train: {len(train_df)} rows -> {train_path}")
     logger.success(f"Test: {len(test_df)} rows -> {test_path}")
 
