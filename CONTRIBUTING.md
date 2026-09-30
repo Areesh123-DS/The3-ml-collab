@@ -60,6 +60,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <s
 - **Commit code before running `dvc repro` or `dvc exp run`.** `metrics.json` records `git_sha`, which must point at the code that produced it.
 - After a run, commit `dvc.lock`, `metrics.json` (and `configs/params.yaml` if changed), then `dvc push`, then `git push`.
 - Our params file is not at the root, so name it when setting params: `dvc exp run -S configs/params.yaml:train.max_depth=10`.
+- `.gitattributes` forces LF line endings on every OS. Without it, Windows checkouts (CRLF) change the hashes of code deps and `dvc status` reports stages as changed.
 
 ## Local setup
 
