@@ -9,12 +9,12 @@ stages:
       size: 1915795
     - path: src/config.py
       hash: md5
-      md5: e3143bb92da9ce1703d28f61ee3c9f58
-      size: 1236
+      md5: 8ebafdbfde0c67036c8bfab808c87da0
+      size: 1191
     - path: src/prepare.py
       hash: md5
-      md5: f44d9896bdd5fb89af4e93ef2b1b4b2f
-      size: 1299
+      md5: 6e88a5535a643a03c37b021942c32d9b
+      size: 1431
     params:
       configs/params.yaml:
         data.raw_path: data/raw/california_housing.csv
@@ -23,23 +23,23 @@ stages:
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: a489c05f398234f7e308988cc5647fb5
-      size: 381516
+      md5: 3737c41caf6195b92ecdd9ff54d8dd57
+      size: 377387
     - path: data/processed/train.csv
       hash: md5
-      md5: aee62e66e0244752512958031858ad16
-      size: 1528660
+      md5: e2f39669834db49b71f2eeb38f894358
+      size: 1512147
   train:
     cmd: python -m src.modeling.train
     deps:
     - path: data/processed/train.csv
       hash: md5
-      md5: aee62e66e0244752512958031858ad16
-      size: 1528660
+      md5: e2f39669834db49b71f2eeb38f894358
+      size: 1512147
     - path: src/config.py
       hash: md5
-      md5: e3143bb92da9ce1703d28f61ee3c9f58
-      size: 1236
+      md5: 8ebafdbfde0c67036c8bfab808c87da0
+      size: 1191
     - path: src/modeling/train.py
       hash: md5
       md5: 1a4a6b8cbb9ecaaeaad9d404bf8c6a41
@@ -63,25 +63,25 @@ stages:
     deps:
     - path: data/processed/test.csv
       hash: md5
-      md5: a489c05f398234f7e308988cc5647fb5
-      size: 381516
+      md5: 3737c41caf6195b92ecdd9ff54d8dd57
+      size: 377387
     - path: models/model.joblib
       hash: md5
       md5: e71792d26e0188f3d79da1be7cdcd352
       size: 936737
     - path: src/config.py
       hash: md5
-      md5: e3143bb92da9ce1703d28f61ee3c9f58
-      size: 1236
+      md5: 8ebafdbfde0c67036c8bfab808c87da0
+      size: 1191
     - path: src/modeling/evaluate.py
       hash: md5
-      md5: 6c6e24805f61e1ebf366fa7d047cd323
-      size: 1879
+      md5: 409b136c9411d835aaa3d0a29abd3aca
+      size: 1893
     params:
       configs/params.yaml:
         data.target: MedHouseVal
     outs:
     - path: metrics.json
       hash: md5
-      md5: b2f66de6fe819e2828b88fbc081fcf5b
-      size: 152
+      md5: 18206e90fa4bea4e4bc172e5e84a6bd8
+      size: 146

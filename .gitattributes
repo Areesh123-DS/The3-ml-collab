@@ -1,0 +1,2 @@
+# Same line endings on every OS, so DVC hashes of code deps (dvc.lock) match everywhere.
+* text=auto eol=lf

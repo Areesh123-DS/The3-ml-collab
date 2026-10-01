@@ -58,7 +58,7 @@ def main(
         logger.info(f"{name}: {value:.4f}")
 
     metrics["git_sha"] = get_git_sha()
-    metrics_path.write_text(json.dumps(metrics, indent=2) + "\n")
+    metrics_path.write_text(json.dumps(metrics, indent=2) + "\n", newline="\n")
     logger.success(f"Metrics saved to {metrics_path}")
 
 
