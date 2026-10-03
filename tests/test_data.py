@@ -1,4 +1,4 @@
-from src.modeling.train import DEFAULT_PARAMS, load_params
+from src.config import DEFAULT_PARAMS, load_params
 
 
 def test_params_file_has_required_keys():

@@ -2,6 +2,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from loguru import logger
+import yaml
 
 # Load environment variables from .env file if it exists
 load_dotenv()
@@ -20,6 +21,18 @@ MODELS_DIR = PROJ_ROOT / "models"
 
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
+
+# Pipeline files (must match the deps/outs in dvc.yaml)
+DEFAULT_PARAMS = PROJ_ROOT / "configs" / "params.yaml"
+TRAIN_PATH = PROCESSED_DATA_DIR / "train.csv"
+TEST_PATH = PROCESSED_DATA_DIR / "test.csv"
+METRICS_PATH = PROJ_ROOT / "metrics.json"
+
+
+def load_params(path: Path = DEFAULT_PARAMS) -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
 
 # If tqdm is installed, configure loguru with tqdm.write
 # https://github.com/Delgan/loguru/issues/135
