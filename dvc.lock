@@ -5,8 +5,8 @@ stages:
     deps:
     - path: data/raw/california_housing.csv
       hash: md5
-      md5: 18a7bdc9ea4bedeb36241861f97eb404
-      size: 1804661
+      md5: 13cd0156f310aa1b5a1c2eece9442e6b
+      size: 1802259
     - path: src/config.py
       hash: md5
       md5: 8ebafdbfde0c67036c8bfab808c87da0
@@ -23,19 +23,19 @@ stages:
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: e7947d4c9dcc8633b296ce99549cb9e1
-      size: 359248
+      md5: 3e82d73f141b343cfa8ab4ab0e609773
+      size: 359348
     - path: data/processed/train.csv
       hash: md5
-      md5: 773cc74381a49f963610bdf2bb811802
-      size: 1440035
+      md5: 3ff4bb3370faa32d9410dfc13d7f2fd3
+      size: 1437538
   train:
     cmd: python -m src.modeling.train
     deps:
     - path: data/processed/train.csv
       hash: md5
-      md5: 773cc74381a49f963610bdf2bb811802
-      size: 1440035
+      md5: 3ff4bb3370faa32d9410dfc13d7f2fd3
+      size: 1437538
     - path: src/config.py
       hash: md5
       md5: 8ebafdbfde0c67036c8bfab808c87da0
@@ -56,19 +56,19 @@ stages:
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: bc9a333106cb694a09961220539f13d6
-      size: 239818289
+      md5: 6c8a5e967f93b8909db81b487cbef5e2
+      size: 239478881
   evaluate:
     cmd: python -m src.modeling.evaluate
     deps:
     - path: data/processed/test.csv
       hash: md5
-      md5: e7947d4c9dcc8633b296ce99549cb9e1
-      size: 359248
+      md5: 3e82d73f141b343cfa8ab4ab0e609773
+      size: 359348
     - path: models/model.joblib
       hash: md5
-      md5: bc9a333106cb694a09961220539f13d6
-      size: 239818289
+      md5: 6c8a5e967f93b8909db81b487cbef5e2
+      size: 239478881
     - path: src/config.py
       hash: md5
       md5: 8ebafdbfde0c67036c8bfab808c87da0
@@ -83,5 +83,5 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: 01ba7d94035de573859702eca9c7a7cf
-      size: 148
+      md5: f5c64a1d6d8fa1d245698982f7d5365e
+      size: 146
