@@ -9,6 +9,6 @@ split:
 
 train:
   model: random_forest
-  n_estimators: 500
+  n_estimators: 300
   max_depth: 20
   model_path: models/model.joblib
