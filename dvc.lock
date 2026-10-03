@@ -11,13 +11,18 @@ stages:
       hash: md5
       md5: 8ebafdbfde0c67036c8bfab808c87da0
       size: 1191
+    - path: src/features.py
+      hash: md5
+      md5: a4816c4da03c9b433f8c24ca826f9a41
+      size: 941
     - path: src/prepare.py
       hash: md5
-      md5: 6e88a5535a643a03c37b021942c32d9b
-      size: 1431
+      md5: 3cbd2ec0530b6524b9e953a115282bbb
+      size: 1643
     params:
       configs/params.yaml:
         data.raw_path: data/raw/california_housing.csv
+        features.bedroom_ratio: false
         seed: 42
         split.test_size: 0.2
     outs:
