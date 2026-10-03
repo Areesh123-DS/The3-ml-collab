@@ -45,6 +45,8 @@ We use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <s
 ## Pull requests
 
 - Every PR needs **1 approval** from a teammate and passing CI.
+- **Check the base branch before creating the PR.** Feature, data and docs PRs target `dev`. Only release PRs target `staging` (from `dev`) or `main` (from `staging`). GitHub defaults to `main`, so change it if needed.
+- Required status check on `dev`, `staging` and `main`: `CI / checks (pull_request)`. The repo owner sets it under Settings → Branches.
 - Fill in the PR template, including metrics before → after if the model changed.
 - Reviewers check out the branch and run it at least once when the pipeline changes.
 
@@ -58,9 +60,17 @@ We use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <s
 
 - The pipeline is defined in `dvc.yaml`: `prepare` → `train` → `evaluate`. Hyperparameters, split and seed live only in `configs/params.yaml`.
 - **Commit code before running `dvc repro` or `dvc exp run`.** `metrics.json` records `git_sha`, which must point at the code that produced it.
+- A squash merge creates a new SHA. After a squash merge into `dev`, run `uv run dvc repro -f` on `dev`, commit `metrics.json`, and merge that commit too.
+- Reproduce a release only after its PR is merged into `staging`. A clone of `staging` before that doesn't have DVC.
 - After a run, commit `dvc.lock`, `metrics.json` (and `configs/params.yaml` if changed), then `dvc push`, then `git push`.
 - Our params file is not at the root, so name it when setting params: `dvc exp run -S configs/params.yaml:train.max_depth=10`.
 - `.gitattributes` forces LF line endings on every OS. Without it, Windows checkouts (CRLF) change the hashes of code deps and `dvc status` reports stages as changed.
+
+## Recovery
+
+- **`dvc push` times out** on the large model: retry with `uv run dvc push --jobs 1`. Don't run `git push` until `dvc push` finishes without errors. Check with `uv run dvc status --cloud` ("Cache and remote 'storage' are in sync").
+- **DVC says "Unable to acquire lock"**: first check for leftover `dvc` or `python` processes from an interrupted command, and close them. Only then delete the lock files in `.dvc/tmp/` (`lock`, `rwlock`, `rwlock.lock`).
+- **Commit messages with counts** (for example rows removed) must use numbers from the data files, not from memory.
 
 ## Local setup
 
