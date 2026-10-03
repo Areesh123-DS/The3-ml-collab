@@ -1,10 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from src.config import load_params
-from src.modeling.evaluate import evaluate_model
-from src.modeling.train import train_model
-from src.prepare import split_data
+from src.modeling.train import load_params, train_and_evaluate
 
 FEATURES = [
     "MedInc",
@@ -31,29 +28,14 @@ def _small_params() -> dict:
     return params
 
 
-def _run_pipeline(df: pd.DataFrame, params: dict) -> dict:
-    train_df, test_df = split_data(df, params)
-    model = train_model(train_df, params)
-    return evaluate_model(model, test_df, params["data"]["target"])
-
-
-def test_split_is_seeded_and_disjoint():
-    df = _synthetic_housing()
-    params = _small_params()
-    train1, test1 = split_data(df, params)
-    train2, test2 = split_data(df, params)
-    assert train1.index.equals(train2.index)
-    assert test1.index.equals(test2.index)
-    assert train1.index.intersection(test1.index).empty
-    assert len(test1) == int(len(df) * params["split"]["test_size"])
-
-
-def test_pipeline_returns_metrics():
-    metrics = _run_pipeline(_synthetic_housing(), _small_params())
+def test_train_returns_metrics():
+    _, metrics = train_and_evaluate(_synthetic_housing(), _small_params())
     assert set(metrics) == {"rmse", "mae", "r2"}
     assert metrics["rmse"] >= 0
 
 
-def test_pipeline_is_deterministic():
+def test_training_is_deterministic():
     df = _synthetic_housing()
-    assert _run_pipeline(df, _small_params()) == _run_pipeline(df, _small_params())
+    _, m1 = train_and_evaluate(df, _small_params())
+    _, m2 = train_and_evaluate(df, _small_params())
+    assert m1 == m2

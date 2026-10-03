@@ -16,8 +16,8 @@ Requires [uv](https://docs.astral.sh/uv/) and Python 3.12.
 
 ```bash
 uv sync                                 # create .venv from uv.lock
-uv run dvc pull                         # fetch data and model from the DVC remote (see CONTRIBUTING.md)
-uv run dvc repro                        # prepare -> train -> evaluate, writes metrics.json
+uv run python -m src.dataset            # download data to data/raw/california_housing.csv
+uv run python -m src.modeling.train     # train, print RMSE / MAE / R², save models/model.joblib
 uv run pytest                           # run tests
 uv run ruff check . && uv run ruff format --check .
 ```
@@ -28,9 +28,6 @@ uv run ruff check . && uv run ruff format --check .
 ├── Makefile           <- Convenience commands like `make data` or `make train`
 ├── README.md          <- The top-level README for developers using this project
 ├── CONTRIBUTING.md    <- Branching model, commit convention, merge policy
-├── dvc.yaml           <- Pipeline stages: prepare -> train -> evaluate
-├── dvc.lock           <- Hashes of every stage's deps, params and outputs
-├── metrics.json       <- Test metrics and the git SHA of the run
 ├── configs
 │   └── params.yaml    <- Seed, split and model hyperparameters
 ├── data               <- Ignored by Git, tracked by DVC
@@ -54,12 +51,10 @@ uv run ruff check . && uv run ruff format --check .
     ├── __init__.py
     ├── config.py      <- Project paths
     ├── dataset.py     <- Download the raw dataset
-    ├── prepare.py     <- Stage 1: seeded train/test split
     ├── features.py    <- Feature engineering
     ├── plots.py       <- Visualizations
     └── modeling
         ├── __init__.py
-        ├── predict.py  <- Model inference
-        ├── train.py    <- Stage 2: fit the model on the train split
-        └── evaluate.py <- Stage 3: score on the test split, write metrics.json
+        ├── predict.py <- Model inference
+        └── train.py   <- Train and evaluate the model
 ```

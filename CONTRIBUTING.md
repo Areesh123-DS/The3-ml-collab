@@ -54,20 +54,11 @@ We use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <s
 - **Always run `dvc push` before `git push`.**
 - Never commit credentials; keep DVC remote credentials in `.dvc/config.local` or environment variables.
 
-## Pipeline runs
-
-- The pipeline is defined in `dvc.yaml`: `prepare` → `train` → `evaluate`. Hyperparameters, split and seed live only in `configs/params.yaml`.
-- **Commit code before running `dvc repro` or `dvc exp run`.** `metrics.json` records `git_sha`, which must point at the code that produced it.
-- After a run, commit `dvc.lock`, `metrics.json` (and `configs/params.yaml` if changed), then `dvc push`, then `git push`.
-- Our params file is not at the root, so name it when setting params: `dvc exp run -S configs/params.yaml:train.max_depth=10`.
-- `.gitattributes` forces LF line endings on every OS. Without it, Windows checkouts (CRLF) change the hashes of code deps and `dvc status` reports stages as changed.
-
 ## Local setup
 
 ```bash
 uv sync
-uv run pre-commit install
-uv run dvc pull        # data, processed splits and model from the DVC remote
-uv run dvc repro       # re-runs only the stages whose deps or params changed
+uv run python -m src.dataset
+uv run python -m src.modeling.train
 uv run pytest
 ```

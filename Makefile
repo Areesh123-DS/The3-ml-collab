@@ -67,10 +67,10 @@ create_environment:
 data: requirements
 	$(PYTHON_INTERPRETER) -m src.dataset
 
-## Run the DVC pipeline (prepare -> train -> evaluate)
+## Train the model
 .PHONY: train
 train:
-	uv run dvc repro
+	$(PYTHON_INTERPRETER) -m src.modeling.train
 
 
 #################################################################################
