@@ -1,0 +1,87 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m src.prepare
+    deps:
+    - path: data/raw/california_housing.csv
+      hash: md5
+      md5: 13cd0156f310aa1b5a1c2eece9442e6b
+      size: 1802259
+    - path: src/config.py
+      hash: md5
+      md5: 8ebafdbfde0c67036c8bfab808c87da0
+      size: 1191
+    - path: src/prepare.py
+      hash: md5
+      md5: 6e88a5535a643a03c37b021942c32d9b
+      size: 1431
+    params:
+      configs/params.yaml:
+        data.raw_path: data/raw/california_housing.csv
+        seed: 42
+        split.test_size: 0.2
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 3e82d73f141b343cfa8ab4ab0e609773
+      size: 359348
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 3ff4bb3370faa32d9410dfc13d7f2fd3
+      size: 1437538
+  train:
+    cmd: python -m src.modeling.train
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 3ff4bb3370faa32d9410dfc13d7f2fd3
+      size: 1437538
+    - path: src/config.py
+      hash: md5
+      md5: 8ebafdbfde0c67036c8bfab808c87da0
+      size: 1191
+    - path: src/modeling/train.py
+      hash: md5
+      md5: 1a4a6b8cbb9ecaaeaad9d404bf8c6a41
+      size: 1639
+    params:
+      configs/params.yaml:
+        data.target: MedHouseVal
+        seed: 42
+        train:
+          model: random_forest
+          n_estimators: 200
+          max_depth: 20
+          model_path: models/model.joblib
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: 6c8a5e967f93b8909db81b487cbef5e2
+      size: 239478881
+  evaluate:
+    cmd: python -m src.modeling.evaluate
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 3e82d73f141b343cfa8ab4ab0e609773
+      size: 359348
+    - path: models/model.joblib
+      hash: md5
+      md5: 6c8a5e967f93b8909db81b487cbef5e2
+      size: 239478881
+    - path: src/config.py
+      hash: md5
+      md5: 8ebafdbfde0c67036c8bfab808c87da0
+      size: 1191
+    - path: src/modeling/evaluate.py
+      hash: md5
+      md5: 409b136c9411d835aaa3d0a29abd3aca
+      size: 1893
+    params:
+      configs/params.yaml:
+        data.target: MedHouseVal
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: b91d1f25fc0c2ac0ea8bea26c324df84
+      size: 146
