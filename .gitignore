@@ -9,7 +9,6 @@ data/**/*
 # Models and checkpoints: tracked by DVC, never by Git
 models/*
 !models/.gitkeep
-!models/.gitignore
 *.joblib
 *.pkl
 *.ckpt
