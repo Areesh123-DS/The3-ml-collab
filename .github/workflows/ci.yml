@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, staging, main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Lint
+        run: |
+          uv run ruff check
+          uv run ruff format --check
+
+      - name: Unit tests and data checks
+        run: uv run pytest
+
+      - name: Smoke train on committed sample
+        run: uv run python -m src.modeling.train --train-path tests/fixtures/sample_housing.csv --model-path "$RUNNER_TEMP/model.joblib"
