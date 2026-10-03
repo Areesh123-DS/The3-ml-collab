@@ -25,5 +25,8 @@ jobs:
       - name: Unit tests and data checks
         run: uv run pytest
 
-      - name: Smoke train on committed sample
-        run: uv run python -m src.modeling.train --train-path tests/fixtures/sample_housing.csv --model-path "$RUNNER_TEMP/model.joblib"
+      - name: Smoke run on committed sample (prepare, train, evaluate)
+        run: |
+          uv run python -m src.prepare --input-path tests/fixtures/sample_housing.csv --train-path "$RUNNER_TEMP/train.csv" --test-path "$RUNNER_TEMP/test.csv"
+          uv run python -m src.modeling.train --train-path "$RUNNER_TEMP/train.csv" --model-path "$RUNNER_TEMP/model.joblib"
+          uv run python -m src.modeling.evaluate --test-path "$RUNNER_TEMP/test.csv" --model-path "$RUNNER_TEMP/model.joblib" --metrics-path "$RUNNER_TEMP/metrics.json"
