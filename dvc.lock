@@ -83,5 +83,5 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: f5c64a1d6d8fa1d245698982f7d5365e
+      md5: b91d1f25fc0c2ac0ea8bea26c324df84
       size: 146
