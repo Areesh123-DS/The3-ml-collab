@@ -4,11 +4,13 @@ stages:
     deps:
       - data/raw/california_housing.csv
       - src/prepare.py
+      - src/features.py
       - src/config.py
     params:
       - configs/params.yaml:
           - seed
           - data.raw_path
+          - features.bedroom_ratio
           - split.test_size
     outs:
       - data/processed/train.csv

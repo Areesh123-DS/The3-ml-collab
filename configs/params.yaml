@@ -4,6 +4,9 @@ data:
   raw_path: data/raw/california_housing.csv
   target: MedHouseVal
 
+features:
+  bedroom_ratio: false
+
 split:
   test_size: 0.2
 

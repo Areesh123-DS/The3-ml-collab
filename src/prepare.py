@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 import typer
 
 from src.config import DEFAULT_PARAMS, PROJ_ROOT, TEST_PATH, TRAIN_PATH, load_params
+from src.features import add_bedroom_ratio
 
 app = typer.Typer()
 
@@ -32,6 +33,9 @@ def main(
     input_path = input_path or PROJ_ROOT / params["data"]["raw_path"]
 
     df = pd.read_csv(input_path)
+    # Row-wise ratio, nothing is fit, so adding it before the split cannot leak test data
+    if params["features"]["bedroom_ratio"]:
+        df = add_bedroom_ratio(df)
     train_df, test_df = split_data(df, params)
 
     # Fixed "\n" so the outputs (and their DVC hashes) are identical on Windows and Linux
