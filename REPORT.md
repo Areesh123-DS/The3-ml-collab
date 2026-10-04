@@ -13,7 +13,7 @@ Released model: tag `model-v1.0` on `main` (see [section 2](#2-reproducibility-t
 
 - **Dataset:** California Housing, loaded with `sklearn.datasets.fetch_california_housing`. Source: https://scikit-learn.org/stable/datasets/real_world.html#california-housing-dataset
 - **Target:** `MedHouseVal`. Rows with the $500k cap (`MedHouseVal >= 5.0`) are removed in `src/dataset.py` (PR #14). The raw file now has 19,648 rows, which is 992 fewer than the 20,640 in the original dataset. The PR #14 commit message says 965 rows; the count above is from the file.
-- **Starter code:** adapted from the scikit-learn California Housing examples (credited in the docstring of `src/modeling/train.py`). [TODO (Areeba): confirm the dataset and starter-code source and add the link.]
+- **Starter code:** a `RandomForestRegressor` training script adapted from the scikit-learn California Housing examples (https://scikit-learn.org/stable/datasets/real_world.html#california-housing-dataset), imported into `src/` in Phase 2 and credited in the docstring of `src/modeling/train.py`.
 
 ## 2. Reproducibility table (released model)
 
@@ -59,6 +59,21 @@ Each row is one `dvc exp run` or one PR's reported result.
 | d20, n200 (cleaned data) | max_depth=20, n=200 | 0.46394 | 0.30984 | 0.77550 | Final `dev` (PR #14) |
 
 In PR #7, depth 15 was chosen over 20 because of diminishing returns.
+
+`dvc exp show --md --only-changed` on `exp/areeba-max-depth` (all runs from commit `26818bb`, n_estimators=100):
+
+| Experiment | rmse | mae | r2 | train.max_depth |
+|---|---|---|---|---|
+| exp/areeba-max-depth (baseline) | 0.64826 | 0.46085 | 0.67930 | 6 |
+| ├── md-8 | 0.58552 | 0.40260 | 0.73838 | 8 |
+| ├── md-10 | 0.54448 | 0.36632 | 0.77377 | 10 |
+| ├── md-12 | 0.52314 | 0.34594 | 0.79115 | 12 |
+| ├── **md-15** | **0.51137** | **0.33312** | **0.80045** | **15** |
+| └── md-20 | 0.50625 | 0.32807 | 0.80442 | 20 |
+
+The r2 gain per step shrank from +0.059 (6 → 8) to +0.004 (15 → 20), so depth 15 was promoted in #7 as the best trade-off between accuracy and model size.
+
+![dvc exp show for exp/areeba-max-depth](docs/screenshots/exp-areeba-max-depth.png)
 
 `dvc exp show --md --only-changed` on `exp/areesha-depth-trees`:
 
@@ -159,7 +174,5 @@ What we added to CONTRIBUTING.md because of it:
 ## 7. Individual contributions
 
 - **Tayyaba Hassan (Platform owner):** I ran the `n_estimators` experiments (50, 200 and 300 trees) and promoted 300 (#8), then later brought the tree count back down to keep the model smaller (#12). I set up CI with lint, tests, data checks and a smoke train on every PR (#15), and showed with a deliberately broken test that a failing check blocks merging (#16, #17, #19). For the release, I opened both release PRs (#20, #21), ran the reproducibility test on a fresh clone and got identical metrics. I also wrote the first draft of this report and the retrospective (#22). I reviewed #7, #9 and #13.
-- **Areeba Ali (Asghar) (Model owner):** [TODO (Areeba): rewrite in your own words] Authored PRs #4, #5, #6, #7 and #13. Reviewed and merged PR #10. Wrote the README and CONTRIBUTING.md scaffold.
+- **Areeba Ali (Asghar) (Model owner):** In Phase 2 I scaffolded the project with Cookiecutter Data Science, imported the starter training code into `src/`, pinned the environment with uv, wrote the README and CONTRIBUTING.md, and created the `staging` and `dev` branches. I built the DVC pipeline with separate prepare, train and evaluate stages, all parameters in `params.yaml` and the commit SHA logged in `metrics.json` (#4). When `dvc status` showed false changes on Windows, I traced it to CRLF line endings and fixed it with `.gitattributes` and LF output files (#5). I added the PR template with the review checklist (#6). I ran five `max_depth` experiments on `exp/areeba-max-depth` and promoted depth 15, which raised r2 from 0.679 to 0.800 (#7); my BedroomRatio experiment on `exp/areeba-bedroom-ratio` made the model slightly worse, so I abandoned it. For the conflict task, I rebased my `n_estimators` change on top of #12, resolved the `params.yaml` conflict and documented it (#13). When #10 was merged into `main` by mistake instead of `dev`, I spotted the problem and restored `main` with a revert PR (#11), without rewriting history. I reviewed #1, #2, #3, #10, #12, #14, #15 and #18, running the branch locally for each pipeline or data change, and requested changes on #14 before approving it.
 - **Areesha Riaz (Data owner):** I created the repository and made the CI check required on `dev`, `staging` and `main`. I set up the pre-commit hooks (#1), put the dataset under DVC (#2) and made the EDA notebook (#3). For experiments, I tried three combinations of tree depth and number of trees and promoted the best one (#9). As Data owner, I removed the 992 rows with capped house prices and moved that cleaning step into code with a test (#14); a teammate requested changes on this PR and I fixed all of them. I also re-ran the pipeline so `metrics.json` records the correct commit (#18). I reviewed #4, #5, #6, #11, the two release PRs (#20, #21) and the report PR (#22).
-
-Each paragraph above lists what the git history shows. Each member should rewrite their paragraph in their own words, and should check the PR counts before submitting.
