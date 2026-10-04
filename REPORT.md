@@ -69,6 +69,17 @@ In PR #7, depth 15 was chosen over 20 because of diminishing returns.
 | ├── **d20-n500** | **0.50269** | **0.32617** | **0.80716** | 6a9f959 | 500 | 20 |
 | └── d20-n300 | 0.50397 | 0.32702 | 0.80618 | 6a9f959 | 300 | 20 |
 
+Experiments on `exp/tayyaba-n-estimators` (max_depth=15), as reported in [#8](https://github.com/Areesh123-DS/The3-ml-collab/pull/8):
+
+| Experiment | n_estimators | rmse | mae | r2 |
+|---|---|---|---|---|
+| baseline | 100 | 0.51137 | 0.33312 | 0.80045 |
+| n-estimators-50 | 50 | 0.51229 | 0.33460 | 0.79973 |
+| n-estimators-200 | 200 | 0.50944 | 0.33210 | 0.80195 |
+| **n-estimators-300** | **300** | **0.50890** | **0.33217** | **0.80237** |
+
+`n_estimators=300` gave the best rmse and r2, with diminishing gains between 200 and 300, so it was promoted in #8.
+
 **Why the winner was chosen.** Among the depth and tree-count runs, d20 with n500 gave the best rmse, mae and r2. Depth 25 gave no further gain, so depth 20 was kept. The model with n500 was about 567 MB, which made DVC pushes and pulls slow. Since n200 is within about 0.002 rmse of n500 on the same data, the team reduced n_estimators to shrink the model (500 → 300 in #12, then 300 → 200 in #13). The final cleaned-data metrics come from PR #14.
 
 ## 4. Pull requests and process
@@ -147,7 +158,7 @@ What we added to CONTRIBUTING.md because of it:
 
 ## 7. Individual contributions
 
-- **Tayyaba Hassan (Platform owner):** [TODO (Tayyaba): rewrite in your own words] Authored PRs #8, #10 (incident), #12. Reviewed and merged PR #7. Ran the `n_estimators` experiments (50, 200, 300) for PR #8. Checked PRs #9, #12 and #13 locally (reproduction, tests, pre-commit) before review.
+- **Tayyaba Hassan (Platform owner):** I ran the `n_estimators` experiments (50, 200 and 300 trees) and promoted 300 (#8), then later brought the tree count back down to keep the model smaller (#12). I set up CI with lint, tests, data checks and a smoke train on every PR (#15), and showed with a deliberately broken test that a failing check blocks merging (#16, #17, #19). For the release, I opened both release PRs (#20, #21), ran the reproducibility test on a fresh clone and got identical metrics. I also wrote the first draft of this report and the retrospective (#22). I reviewed #7, #9 and #13.
 - **Areeba Ali (Asghar) (Model owner):** [TODO (Areeba): rewrite in your own words] Authored PRs #4, #5, #6, #7 and #13. Reviewed and merged PR #10. Wrote the README and CONTRIBUTING.md scaffold.
 - **Areesha Riaz (Data owner):** I created the repository and made the CI check required on `dev`, `staging` and `main`. I set up the pre-commit hooks (#1), put the dataset under DVC (#2) and made the EDA notebook (#3). For experiments, I tried three combinations of tree depth and number of trees and promoted the best one (#9). As Data owner, I removed the 992 rows with capped house prices and moved that cleaning step into code with a test (#14); a teammate requested changes on this PR and I fixed all of them. I also re-ran the pipeline so `metrics.json` records the correct commit (#18). I reviewed #4, #5, #6, #11, the two release PRs (#20, #21) and the report PR (#22).
 
